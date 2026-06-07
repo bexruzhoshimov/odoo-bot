@@ -1,10 +1,18 @@
 image: Visual Studio 2022
 
-build_script:
+environment:
+  PLAYWRIGHT_BROWSERS_PATH: "%APPVEYOR_BUILD_FOLDER%\\pw-browsers"
+
+install:
   - pip install playwright pyinstaller
+
+build_script:
+  # Chromium ni mahalliy papkaga o'rnatish
   - playwright install chromium
-  - pyinstaller --onefile --console --name "OdooBot" yuklash.py
+
+  # EXE yasash — brauzer ham ichiga qo'shiladi
+  - pyinstaller --onefile --console --name "OdooBot" --add-data "pw-browsers;browsers" yuklash.py
 
 artifacts:
   - path: dist\OdooBot.exe
-    name: OdooBot
+    name: OdooBot-Windows-EXE
