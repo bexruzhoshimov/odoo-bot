@@ -1,0 +1,32 @@
+version: 2.1
+
+jobs:
+  build-windows:
+    machine:
+      image: windows-server-2022-gui:current
+      shell: powershell.exe
+    resource_class: windows.medium
+    steps:
+      - checkout
+      - run:
+          name: Install Python
+          command: |
+            choco install python312 -y
+            refreshenv
+      - run:
+          name: Install dependencies
+          command: |
+            python -m pip install playwright pyinstaller
+            python -m playwright install chromium
+      - run:
+          name: Build EXE
+          command: |
+            pyinstaller --onefile --console --name "OdooBot" yuklash.py
+      - store_artifacts:
+          path: dist/OdooBot.exe
+          destination: OdooBot.exe
+
+workflows:
+  build:
+    jobs:
+      - build-windows
